@@ -5,13 +5,21 @@ from models import User, Attendance, Credit, InboxMessage
 import random
 import string
 from datetime import datetime, time, date
+import os  # <--- added import for debug
 
-app = Flask(__name__)
+print("Starting Flask app...")
+print("Current working directory:", os.getcwd())
+print("Templates folder exists?", os.path.isdir('templates'))
+print("Templates contents:", os.listdir('templates') if os.path.isdir('templates') else "No folder")
+
+# <-- CHANGE HERE: Tell Flask where to find your templates explicitly
+app = Flask(__name__, template_folder=os.path.abspath('templates'))
+
 app.config['SECRET_KEY'] = 'your_secret_key_here'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///lumbini_footwear.db'
 
 db.init_app(app)
-socketio = SocketIO(app, manage_session=False)  # manage_session=False because we handle session ourselves
+socketio = SocketIO(app, manage_session=False)  # We manage sessions ourselves
 
 with app.app_context():
     db.create_all()
@@ -20,7 +28,7 @@ with app.app_context():
     owner = User.query.filter_by(username='owner').first()
     if not owner:
         owner = User(username='owner', role='owner')
-        owner.password = 'ownerpass'
+        owner.password = 'ownerpass'  # Make sure password hashing is handled in User model
         db.session.add(owner)
         db.session.commit()
         print("Default owner created: username='owner' password='ownerpass'")
@@ -84,7 +92,7 @@ def add_staff():
         return redirect(url_for('owner_dashboard'))
     new_pass = generate_password()
     new_staff = User(username=staff_username, role='staff')
-    new_staff.password = new_pass
+    new_staff.password = new_pass  # Make sure password hashing happens here or in model setter
     db.session.add(new_staff)
     db.session.commit()
 
@@ -116,7 +124,7 @@ def staff_dashboard():
         return redirect(url_for('login'))
     return render_template('staff_dashboard.html', username=session.get('username'))
 
-# ------- STAFF INBOX (NEW FIXED ROUTE) --------
+# ------- STAFF INBOX --------
 @app.route('/staff/inbox')
 def staff_inbox():
     if session.get('role') != 'staff':
@@ -135,7 +143,7 @@ def staff_checkin():
 
     user_id = session['user_id']
     now = datetime.now()
-    late = now.time() > time(9, 0)  # Late if after 9 AM
+    late = now.time() > time(8, 0)  # Late if after 8 AM
 
     attendance = Attendance(user_id=user_id, checkin_time=now, late=late)
     db.session.add(attendance)

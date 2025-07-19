@@ -1,6 +1,6 @@
 from extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+from datetime import datetime, date
 
 class User(db.Model):
     __tablename__ = 'user'  # Explicit table name to match foreign keys
@@ -34,7 +34,7 @@ class Attendance(db.Model):
 class Credit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     amount = db.Column(db.Float, nullable=False)
-    date_taken = db.Column(db.Date, default=datetime.utcnow)
+    date_taken = db.Column(db.Date, default=date.today)  # Use date.today, not datetime.utcnow for Date column
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
 
     user = db.relationship('User', backref=db.backref('credits', cascade='all, delete-orphan'))
