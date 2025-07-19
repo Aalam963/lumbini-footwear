@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manage Credit - {{ staff.username }}</title>
+  <style>
+    /* Reset some */
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #f7f9fc;
+      color: #333;
+      margin: 0;
+      padding: 0 1rem;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 3rem auto;
+      background: white;
+      padding: 2rem 3rem;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #2c3e50;
+      letter-spacing: 1px;
+    }
+
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 2rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+    }
+
+    label {
+      flex: 1 0 150px;
+      align-self: center;
+      font-weight: 600;
+      color: #34495e;
+    }
+
+    input[type="number"],
+    input[type="date"] {
+      flex: 1 0 200px;
+      padding: 0.5rem 0.75rem;
+      border: 1.8px solid #bdc3c7;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="number"]:focus,
+    input[type="date"]:focus {
+      outline: none;
+      border-color: #2980b9;
+      box-shadow: 0 0 6px #2980b9aa;
+    }
+
+    button {
+      background-color: #2980b9;
+      color: white;
+      font-weight: 700;
+      padding: 0.7rem 2rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background-color 0.3s ease;
+      flex: 1 0 100px;
+      align-self: center;
+    }
+
+    button:hover {
+      background-color: #1f6391;
+    }
+
+    h2 {
+      border-bottom: 2px solid #2980b9;
+      padding-bottom: 0.5rem;
+      color: #2c3e50;
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #dfe6e9;
+      border-radius: 8px;
+      background: #f9fbfd;
+    }
+
+    li {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid #dfe6e9;
+      font-weight: 600;
+      color: #34495e;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    li:last-child {
+      border-bottom: none;
+    }
+
+    a.back-btn {
+      display: block;
+      text-align: center;
+      margin-top: 2rem;
+      font-weight: 700;
+      color: #2980b9;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    a.back-btn:hover {
+      color: #1f6391;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Manage Credit for <span style="color:#2980b9;">{{ staff.username }}</span></h1>
+
+    <form method="POST" novalidate>
+      <label for="amount">Credit Amount:</label>
+      <input type="number" step="0.01" name="amount" id="amount" placeholder="e.g. 1000" required />
+
+      <label for="date_taken">Date Taken:</label>
+      <input type="date" name="date_taken" id="date_taken" />
+
+      <button type="submit">Add Credit</button>
+    </form>
+
+    <h2>Credit History</h2>
+    <ul>
+      {% for credit in credits %}
+        <li>
+          <span>₹ {{ "%.2f"|format(credit.amount) }}</span>
+          <span>{{ credit.date_taken.strftime('%b %d, %Y') }}</span>
+        </li>
+      {% else %}
+        <li>No credits found.</li>
+      {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('owner_dashboard') }}" class="back-btn">← Back to Dashboard</a>
+  </div>
+</body>
+</html>

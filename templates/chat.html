@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat - Lumbini Footwear</title>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eaeff1;
+            padding: 30px;
+        }
+
+        #messages {
+            background: white;
+            border: 2px solid #3498db;
+            padding: 15px;
+            height: 400px;
+            overflow-y: scroll;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 6px;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 12px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px;
+            background: #2980b9;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>Live Chat - {{ role|capitalize }} {{ username }}</h2>
+    <div id="messages"></div>
+
+    <input type="text" id="messageInput" placeholder="Type your message..." autocomplete="off" />
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const socket = io();
+        const username = "{{ username }}";
+        const role = "{{ role }}";
+
+        socket.on('receive_message', function (data) {
+            const msgBox = document.getElementById("messages");
+            const msg = `<div class="message"><strong>${data.sender} (${data.role}):</strong> ${data.message}</div>`;
+            msgBox.innerHTML += msg;
+            msgBox.scrollTop = msgBox.scrollHeight;
+        });
+
+        function sendMessage() {
+            const input = document.getElementById("messageInput");
+            const message = input.value;
+            if (message.trim() !== "") {
+                socket.emit("send_message", {
+                    sender: username,
+                    role: role,
+                    message: message
+                });
+                input.value = "";
+            }
+        }
+    </script>
+</body>
+</html>

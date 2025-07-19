@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Owner Inbox - Lumbini Footwear</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+    <header>
+        <h1>Owner Inbox</h1>
+        <a href="{{ url_for('owner_dashboard') }}">Back to Dashboard</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </header>
+    <section>
+        {% if inbox %}
+            <ul>
+                {% for msg in inbox %}
+                <li><strong>{{ msg.timestamp.strftime('%Y-%m-%d %H:%M') }}</strong> - {{ msg.content }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No messages in inbox.</p>
+        {% endif %}
+    </section>
+</body>
+</html>

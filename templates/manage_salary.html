@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Manage Salary - Lumbini Footwear</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+    <header>
+        <h1>Manage Salary for {{ staff.username }}</h1>
+        <a href="{{ url_for('owner_dashboard') }}">Back to Dashboard</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </header>
+    <section>
+        <form method="POST">
+            <label>Salary (NPR):</label><br />
+            <input type="number" name="salary" value="{{ staff.salary }}" min="0" required><br /><br />
+
+            <label>Credit Taken (NPR):</label><br />
+            <input type="number" name="credit_taken" value="{{ staff.credit_taken }}" min="0" required><br /><br />
+
+            <button type="submit">Update Salary</button>
+        </form>
+    </section>
+</body>
+</html>
